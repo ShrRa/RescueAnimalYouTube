@@ -14,6 +14,10 @@ YOUTUBE_API_VERSION = 'v3'
 youtube_object = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, 
                                         developerKey = DEVELOPER_KEY) 
 
+def getChannelId(vidId):
+    video_response=youtube_object.videos().list(part='snippet',id=vidId).execute()
+    return video_response['items'][0]['snippet']['channelId']
+
 def getNumOfVids(query, publishedAfter,publishedBefore):
     search_keyword = youtube_object.search().list(q = query, part = "id", type='video',
                                                  publishedAfter=publishedAfter,
@@ -22,9 +26,7 @@ def getNumOfVids(query, publishedAfter,publishedBefore):
     return
 
 def searchVids(query, publishedAfter,publishedBefore,maxResults=50):
-    videos = pd.DataFrame(columns=['videoID','publishedAt',
-                                  'title','description','thumbnailUrl',
-                                  'channelId','channelTitle'])
+    videos = pd.DataFrame(columns=['videoID','publishedAt','title','description','thumbnailUrl','channelId','channelTitle'])
     nextPage=True
     pageToken=None
     
